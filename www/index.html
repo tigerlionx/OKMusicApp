@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- viewport-fit=cover lets native status bar overlay be handled by StatusBar plugin -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>OK Music</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="community.css?v=110" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#050512" />
+
+  <!-- Capacitor native bridge — injected automatically by the native shell.
+       When running in a browser, this script does not exist and is silently ignored. -->
+  <script>
+    // Provide a no-op Capacitor stub so web code works safely in a browser.
+    if (!window.Capacitor) {
+      window.Capacitor = { isNativePlatform: () => false, Plugins: {} };
+    }
+  </script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <div class="miniplayer" id="miniplayer">
+    <div class="mp-art" id="mpArt">◎</div>
+    <div class="mp-info">
+      <div class="mp-title" id="mpTitle">—</div>
+      <div class="mp-artist" id="mpArtist"></div>
+    </div>
+    <button class="mp-btn" id="mpPlay">▶</button>
+    <button class="mp-mode" id="mpMode" title="Playback mode: Continuous">🔁</button>
+    <button class="mp-btn mp-dj" id="mpDJ" title="Open DJ Mixer">🎚</button>
+    <div class="mp-prog" id="mpProg"><div class="mp-prog-fill" id="mpFill"></div></div>
+    <span class="mp-time" id="mpTime">0:00</span>
+  </div>
+
+  <div class="overlay" id="overlay" hidden><div id="overlayBody"></div></div>
+  <div class="toast" id="toast" hidden></div>
+  <audio id="audio"></audio>
+
+  <!-- Firebase (compat SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-functions-compat.js"></script>
+  <script src="firebase-init.js?v=12"></script>
+
+  <script src="community-data.js?v=13"></script>
+  <script src="community.js?v=122"></script>
+  <script src="community-marketplace.js?v=1"></script>
+  <script src="community-wallet.js?v=3"></script>
+  <script src="community-contests.js?v=6"></script>
+  <script src="community-account.js?v=1"></script>
+  <script src="community-calls.js?v=2"></script>
+  <script src="community-dispatcher.js?v=6"></script>
+  <script src="community-listeners.js?v=2"></script>
+  <script src="community-dj.js?v=1"></script>
+  <!-- Native auth bridge — patches signInGoogle() for Capacitor environments.
+       No-ops silently in a regular browser (Capacitor.isNativePlatform() = false). -->
+  <script src="native-auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">OK Music</string>
+    <string name="title_activity_main">OK Music</string>
+    <string name="package_name">net.okmusic.app</string>
+    <string name="custom_url_scheme">net.okmusic.app</string>
+</resources>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>OK Music — DJ Mixer</title>
+  <link rel="stylesheet" href="dj-mixer.css?v=12">
+</head>
+<body>
+
+<div id="rotate-notice">
+  <div class="rotate-icon">📱</div>
+  <strong>Rotate your device</strong>
+  <p>The DJ Mixer works in landscape mode only.<br>Turn your phone or tablet sideways to continue.</p>
+</div>
+
+<div id="mixer-app">
+
+  <!-- ══ Chassis header ══════════════════════════════════════ -->
+  <div class="chassis-hdr">
+    <div class="chassis-sect">
+      <span class="player-label">LEFT PLAYER</span>
+      <div class="hdr-leds">
+        <span class="led led-on" title="INPUT">◉</span>
+        <span class="led" title="USB">◉</span>
+      </div>
+    </div>
+    <div class="chassis-brand">OK-MUSIC DJ</div>
+    <div class="chassis-sect chassis-right-sect">
+      <div class="hdr-controls">
+        <button id="micBtn"     class="hdr-btn"           title="Microphone">🎤</button>
+        <button id="recBtn"     class="hdr-btn hdr-rec"   title="Record mix">⏺ REC</button>
+        <span  id="recTime"     class="rec-time">0:00</span>
+        <button id="samplesBtn" class="hdr-btn hdr-smp"   title="Sample pads · keys 1–8">🎹</button>
+        <div class="master-wrap">
+          <canvas id="masterGainKnob" class="knob-canvas" width="22" height="22" title="Master gain"></canvas>
+          <canvas id="vuMaster" width="8" height="26"></canvas>
+        </div>
+        <button id="btnClose" class="hdr-close" title="Close mixer">✕</button>
+      </div>
+      <div class="hdr-leds">
+        <span class="led led-on" title="POWER">◉</span>
+        <span class="led" title="USB">◉</span>
+      </div>
+      <span class="player-label">RIGHT PLAYER</span>
+    </div>
+  </div>
+
+  <!-- ══ 3-column body ══════════════════════════════════════ -->
+  <div class="mx-body">
+
+    <!-- ═══════════════ DECK A ═══════════════ -->
+    <div class="deck deck-a">
+
+      <!-- LCD waveform display -->
+      <div class="lcd-display lcd-a">
+        <div class="lcd-top">
+          <div class="lcd-track-block">
+            <div class="lcd-title" id="titleA">— No Track —</div>
+            <div class="lcd-artist" id="artistA"></div>
+          </div>
+          <div class="lcd-data-block">
+            <span class="lcd-bpm-val" id="bpmA">—</span>
+            <span class="lcd-bpm-unit">BPM</span>
+            <span class="lcd-time-val" id="timeA">0:00</span>
+          </div>
+        </div>
+        <canvas class="waveform" id="waveA" height="46"></canvas>
+        <div class="lcd-foot">
+          <span class="lcd-deckid">LEFT</span>
+          <span class="lcd-foot-brand">OK-MUSIC DJ</span>
+          <span class="lcd-tempo" id="tempoA">+0.0%</span>
+          <span class="lcd-model">SD6000M</span>
+        </div>
+      </div>
+
+      <!-- Load + TAP row -->
+      <div class="deck-load-row">
+        <button class="load-btn load-file-btn" id="loadFileA">📁 Load File</button>
+        <button class="load-btn load-lib-btn"  id="loadLibA">🎵 My Tracks</button>
+        <button class="tap-btn" id="tapTempoA">TAP</button>
+      </div>
+
+      <!-- Deck surface: pitch | jog | controls -->
+      <div class="deck-surface">
+
+        <!-- Vertical pitch fader (outer left edge) -->
+        <div class="pitch-col">
+          <span class="pitch-sign pitch-plus">+</span>
+          <input type="range" class="pitch-slider-v" id="pitchA"
+                 min="-16" max="16" step="0.1" value="0">
+          <span class="pitch-sign pitch-minus">−</span>
+          <button class="pitch-reset-btn" id="pitchResetA" title="Reset pitch">⊙</button>
+        </div>
+
+        <!-- Jog wheel -->
+        <div class="jog-area">
+          <div class="jog-label-top">OK-MUSIC DJ</div>
+          <canvas class="jog-canvas" id="jogA" width="220" height="220"></canvas>
+          <div class="jog-label-bot">LEFT PLAYER</div>
+        </div>
+
+        <!-- Right controls column -->
+        <div class="deck-ctrl-col">
+          <button class="ctrl-btn" id="syncA">SYNC</button>
+          <div class="beatjump">
+            <button data-deck="A" data-dir="-1" data-beats="4">«4</button>
+            <button data-deck="A" data-dir="-1" data-beats="1">«1</button>
+            <button data-deck="A" data-dir="1"  data-beats="1">1»</button>
+            <button data-deck="A" data-dir="1"  data-beats="4">4»</button>
+          </div>
+          <div class="loop-mini">
+            <span class="section-label">LOOP</span>
+            <div class="loop-row">
+              <button class="loop-btn" id="loopInA">IN</button>
+              <button class="loop-btn" id="loopOutA">OUT</button>
+              <button class="loop-btn loop-toggle" id="loopToggleA">OFF</button>
+            </div>
+            <div class="loop-row">
+              <select class="loop-sel" id="autoLoopSelA">
+                <option value="0.25">¼</option><option value="0.5">½</option>
+                <option value="1" selected>1</option><option value="2">2</option>
+                <option value="4">4</option><option value="8">8</option>
+              </select>
+              <button class="loop-btn" id="autoLoopA">AUTO</button>
+            </div>
+          </div>
+          <div class="eq-col">
+            <span class="section-label">EQ</span>
+            <div class="eq-row">
+              <div class="knob-col"><canvas class="knob-canvas" id="trebleKnobA" width="26" height="26"></canvas><span class="knob-label">HI</span></div>
+              <div class="knob-col"><canvas class="knob-canvas" id="midKnobA"    width="26" height="26"></canvas><span class="knob-label">MID</span></div>
+              <div class="knob-col"><canvas class="knob-canvas" id="bassKnobA"   width="26" height="26"></canvas><span class="knob-label">LOW</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .deck-surface -->
+
+      <!-- Transport + performance pads row -->
+      <div class="transport-pads-row">
+        <div class="transport-btns">
+          <button class="btn-cue"  id="cueA">CUE</button>
+          <button class="btn-play" id="playA">▶</button>
+        </div>
+        <div class="hc-grid" id="hotCuesA"></div>
+      </div>
+
+    </div><!-- /deck-a -->
+
+    <!-- ═══════════════ CENTER MIXER ═══════════════ -->
+    <div class="mixer-center">
+      <div class="mixer-center-label">X1850</div>
+
+      <div class="vu-fader-pair">
+        <!-- Channel A strip -->
+        <div class="ch-col ch-col-a">
+          <div class="knob-col">
+            <canvas class="knob-canvas" id="gainKnobA" width="24" height="24"></canvas>
+            <span class="knob-label">GAIN</span>
+          </div>
+          <canvas class="vu-canvas" id="vuA" width="14" height="110"></canvas>
+          <div class="fader-wrap">
+            <input type="range" class="ch-fader" id="faderA" min="0" max="1" step="0.01" value="1">
+          </div>
+          <span class="ch-ch-label ch-a-label">LEFT</span>
+        </div>
+        <!-- Channel B strip -->
+        <div class="ch-col ch-col-b">
+          <div class="knob-col">
+            <canvas class="knob-canvas" id="gainKnobB" width="24" height="24"></canvas>
+            <span class="knob-label">GAIN</span>
+          </div>
+          <canvas class="vu-canvas" id="vuB" width="14" height="110"></canvas>
+          <div class="fader-wrap">
+            <input type="range" class="ch-fader" id="faderB" min="0" max="1" step="0.01" value="1">
+          </div>
+          <span class="ch-ch-label ch-b-label">RIGHT</span>
+        </div>
+      </div>
+
+    </div><!-- /mixer-center -->
+
+    <!-- ═══════════════ DECK B ═══════════════ -->
+    <div class="deck deck-b">
+
+      <!-- LCD waveform display -->
+      <div class="lcd-display lcd-b">
+        <div class="lcd-top lcd-top-flip">
+          <div class="lcd-data-block">
+            <span class="lcd-time-val" id="timeB">0:00</span>
+            <span class="lcd-bpm-val" id="bpmB">—</span>
+            <span class="lcd-bpm-unit">BPM</span>
+          </div>
+          <div class="lcd-track-block lcd-track-right">
+            <div class="lcd-title" id="titleB">— No Track —</div>
+            <div class="lcd-artist" id="artistB"></div>
+          </div>
+        </div>
+        <canvas class="waveform" id="waveB" height="46"></canvas>
+        <div class="lcd-foot lcd-foot-flip">
+          <span class="lcd-model">SD6000M</span>
+          <span class="lcd-tempo" id="tempoB">+0.0%</span>
+          <span class="lcd-foot-brand">OK-MUSIC DJ</span>
+          <span class="lcd-deckid">RIGHT</span>
+        </div>
+      </div>
+
+      <!-- Load + TAP row -->
+      <div class="deck-load-row deck-load-flip">
+        <button class="tap-btn" id="tapTempoB">TAP</button>
+        <button class="load-btn load-lib-btn"  id="loadLibB">🎵 My Tracks</button>
+        <button class="load-btn load-file-btn" id="loadFileB">📁 Load File</button>
+      </div>
+
+      <!-- Deck surface: controls | jog | pitch (flipped) -->
+      <div class="deck-surface deck-surface-flip">
+
+        <!-- Vertical pitch fader (outer right edge) -->
+        <div class="pitch-col">
+          <span class="pitch-sign pitch-plus">+</span>
+          <input type="range" class="pitch-slider-v" id="pitchB"
+                 min="-16" max="16" step="0.1" value="0">
+          <span class="pitch-sign pitch-minus">−</span>
+          <button class="pitch-reset-btn" id="pitchResetB" title="Reset pitch">⊙</button>
+        </div>
+
+        <!-- Jog wheel -->
+        <div class="jog-area">
+          <div class="jog-label-top">OK-MUSIC DJ</div>
+          <canvas class="jog-canvas" id="jogB" width="220" height="220"></canvas>
+          <div class="jog-label-bot">RIGHT PLAYER</div>
+        </div>
+
+        <!-- Left controls column (deck B mirror) -->
+        <div class="deck-ctrl-col">
+          <button class="ctrl-btn" id="syncB">SYNC</button>
+          <div class="beatjump">
+            <button data-deck="B" data-dir="-1" data-beats="4">«4</button>
+            <button data-deck="B" data-dir="-1" data-beats="1">«1</button>
+            <button data-deck="B" data-dir="1"  data-beats="1">1»</button>
+            <button data-deck="B" data-dir="1"  data-beats="4">4»</button>
+          </div>
+          <div class="loop-mini">
+            <span class="section-label">LOOP</span>
+            <div class="loop-row">
+              <button class="loop-btn" id="loopInB">IN</button>
+              <button class="loop-btn" id="loopOutB">OUT</button>
+              <button class="loop-btn loop-toggle" id="loopToggleB">OFF</button>
+            </div>
+            <div class="loop-row">
+              <select class="loop-sel" id="autoLoopSelB">
+                <option value="0.25">¼</option><option value="0.5">½</option>
+                <option value="1" selected>1</option><option value="2">2</option>
+                <option value="4">4</option><option value="8">8</option>
+              </select>
+              <button class="loop-btn" id="autoLoopB">AUTO</button>
+            </div>
+          </div>
+          <div class="eq-col">
+            <span class="section-label">EQ</span>
+            <div class="eq-row">
+              <div class="knob-col"><canvas class="knob-canvas" id="trebleKnobB" width="26" height="26"></canvas><span class="knob-label">HI</span></div>
+              <div class="knob-col"><canvas class="knob-canvas" id="midKnobB"    width="26" height="26"></canvas><span class="knob-label">MID</span></div>
+              <div class="knob-col"><canvas class="knob-canvas" id="bassKnobB"   width="26" height="26"></canvas><span class="knob-label">LOW</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .deck-surface-flip -->
+
+      <!-- Transport + performance pads row (flipped) -->
+      <div class="transport-pads-row transport-pads-flip">
+        <div class="hc-grid" id="hotCuesB"></div>
+        <div class="transport-btns">
+          <button class="btn-play" id="playB">▶</button>
+          <button class="btn-cue"  id="cueB">CUE</button>
+        </div>
+      </div>
+
+    </div><!-- /deck-b -->
+
+  </div><!-- .mx-body -->
+
+  <!-- ══ Full-width Crossfader ══════════════════════════════ -->
+  <div class="xf-bar">
+    <span class="xf-ab-label xf-a">A</span>
+    <div class="xf-track-wrap">
+      <input type="range" id="crossfader" class="crossfader" min="0" max="1" step="0.005" value="0.5">
+    </div>
+    <span class="xf-ab-label xf-b">B</span>
+  </div>
+
+  <!-- ══ Samples Panel ══════════════════════════════════════ -->
+  <div id="samples-panel" class="samples-panel" hidden>
+    <div class="smp-hdr">
+      <span class="section-label">🎹 SAMPLE PADS &nbsp;·&nbsp; keys 1–8 to play</span>
+      <button id="smpFolderBtn" class="smp-folder-btn">📁 Load Folder</button>
+      <button id="smpCloseBtn"  class="mx-close" style="margin-left:auto">✕</button>
+    </div>
+    <div class="smp-grid" id="smpGrid"></div>
+  </div>
+
+</div><!-- #mixer-app -->
+
+<script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js"></script>
+<script src="dj-mixer.js?v=10"></script>
+</body>
+</html>

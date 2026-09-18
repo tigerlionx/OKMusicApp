@@ -1,0 +1,14 @@
+{
+  "name": "OK Music",
+  "short_name": "OK Music",
+  "description": "The Music Network — share AI music, connect with fans & earn LionCoins",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050512",
+  "theme_color": "#7c5cff",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
