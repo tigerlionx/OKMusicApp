@@ -17,6 +17,9 @@ android/*.keystore
 android/*.jks
 android/keystore.properties
 
+# Firebase config — injected as GitHub secret during CI builds
+android/app/google-services.json
+
 # Local config
 android/local.properties
 

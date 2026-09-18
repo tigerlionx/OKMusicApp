@@ -33,8 +33,6 @@
 	<key>NSCameraUsageDescription</key>
 	<string>OK Music uses the camera for video calls with other users.</string>
 
-	<!-- URL scheme for Google Sign-in redirect callback -->
-	<!-- REPLACE REVERSED_CLIENT_ID with the value from your GoogleService-Info.plist -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -42,7 +40,7 @@
 			<string>Google Sign-in</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>REVERSED_CLIENT_ID_PLACEHOLDER</string>
+				<string>com.googleusercontent.apps.72922695981-2coqt5di2fn3305ubvdt1idtii99bli6</string>
 			</array>
 		</dict>
 	</array>

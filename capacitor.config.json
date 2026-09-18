@@ -24,7 +24,10 @@
       "skipNativeAuth": false,
       "providers": [
         "google.com"
-      ]
+      ],
+      "google": {
+        "clientId": "72922695981-2coqt5di2fn3305ubvdt1idtii99bli6.apps.googleusercontent.com"
+      }
     }
   },
   "ios": {
