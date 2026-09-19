@@ -7,7 +7,7 @@ on:
       - 'android/**'
       - 'www/**'
       - '.github/workflows/build-android.yml'
-  workflow_dispatch:   # also allow manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,9 +27,15 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      # ── 3. Android SDK ───────────────────────────────────────────────────
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
+      # ── 3. Android SDK — use the pre-installed SDK on ubuntu runners ─────
+      - name: Set up Android SDK components
+        run: |
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \
+            "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0" \
+            2>&1 | tail -5
+          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses 2>/dev/null || true
 
       # ── 4. Decode google-services.json from secret ───────────────────────
       - name: Decode google-services.json
@@ -45,42 +51,35 @@ jobs:
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > android/okmusic-release.keystore
 
-      # ── 5. Write keystore.properties ─────────────────────────────────────
+      # ── 6. Write keystore.properties ─────────────────────────────────────
       - name: Write keystore.properties
         env:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: |
-          cat > android/keystore.properties <<EOF
+          cat > android/keystore.properties << EOF
           storeFile=../okmusic-release.keystore
           storePassword=$KEYSTORE_PASSWORD
           keyAlias=$KEY_ALIAS
           keyPassword=$KEY_PASSWORD
           EOF
 
-      # ── 6. Grant execute permission for gradlew ───────────────────────────
+      # ── 7. Grant execute permission for gradlew ───────────────────────────
       - name: Grant Gradle permissions
         run: chmod +x android/gradlew
 
-      # ── 7. Build release AAB ─────────────────────────────────────────────
+      # ── 8. Build release AAB ─────────────────────────────────────────────
       - name: Build release AAB
         working-directory: android
+        env:
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         run: ./gradlew bundleRelease --stacktrace
 
-      # ── 8. Upload AAB as artifact ─────────────────────────────────────────
+      # ── 9. Upload AAB as artifact ─────────────────────────────────────────
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: okmusic-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
-          retention-days: 30
-
-      # ── 9. Also upload mapping file if it exists (for Play Console) ──────
-      - name: Upload mapping
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: okmusic-mapping
-          path: android/app/build/outputs/mapping/release/mapping.txt
           retention-days: 30
