@@ -83,17 +83,25 @@ jobs:
       - name: Grant Gradle permissions
         run: chmod +x android/gradlew
 
-      # ── 9. Build release AAB ─────────────────────────────────────────────
-      - name: Build release AAB
+      # ── 9. Build release AAB + APK ───────────────────────────────────────
+      - name: Build release AAB and APK
         working-directory: android
         env:
           ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
-        run: ./gradlew bundleRelease --stacktrace
+        run: ./gradlew bundleRelease assembleRelease --stacktrace
 
-      # ── 10. Upload AAB as artifact ────────────────────────────────────────
+      # ── 10. Upload AAB (Google Play) ─────────────────────────────────────
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: okmusic-release-aab
           path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      # ── 11. Upload APK (Aptoide / APKPure / Uptodown) ────────────────────
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: okmusic-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 30
