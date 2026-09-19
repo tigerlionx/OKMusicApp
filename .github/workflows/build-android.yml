@@ -27,7 +27,17 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      # ── 3. Android SDK — use the pre-installed SDK on ubuntu runners ─────
+      # ── 3. Node.js + npm install ─────────────────────────────────────────
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      # ── 4. Android SDK — use the pre-installed SDK on ubuntu runners ─────
       - name: Set up Android SDK components
         run: |
           yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager \
@@ -65,18 +75,22 @@ jobs:
           keyPassword=$KEY_PASSWORD
           EOF
 
-      # ── 7. Grant execute permission for gradlew ───────────────────────────
+      # ── 7. Capacitor sync — generates capacitor-cordova-android-plugins ──
+      - name: Run cap sync android
+        run: npx cap sync android
+
+      # ── 8. Grant execute permission for gradlew ───────────────────────────
       - name: Grant Gradle permissions
         run: chmod +x android/gradlew
 
-      # ── 8. Build release AAB ─────────────────────────────────────────────
+      # ── 9. Build release AAB ─────────────────────────────────────────────
       - name: Build release AAB
         working-directory: android
         env:
           ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         run: ./gradlew bundleRelease --stacktrace
 
-      # ── 9. Upload AAB as artifact ─────────────────────────────────────────
+      # ── 10. Upload AAB as artifact ────────────────────────────────────────
       - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
